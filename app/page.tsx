@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Player, Team, TEAMS } from "@/lib/players";
+import StatsTable from "@/components/StatsTable";
 
 type PlayersResponse = {
   voters: Record<Team, Player[]>;
@@ -200,6 +201,8 @@ export default function Home() {
             />
           </div>
         )}
+
+        <StatsTable />
 
         <p className="text-center text-white/30 text-xs mt-12">Votes are recorded privately — results are not shown publicly.</p>
       </div>

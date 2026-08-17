@@ -7,19 +7,43 @@
 }
 
 body {
-  background:
-    radial-gradient(circle at 15% 0%, rgba(126, 200, 232, 0.18), transparent 45%),
-    radial-gradient(circle at 100% 20%, rgba(126, 200, 232, 0.10), transparent 40%),
-    linear-gradient(180deg, #08172c 0%, #0b1f3a 55%, #08172c 100%);
+  background: #08172c;
   min-height: 100vh;
+  position: relative;
 }
 
 .stripe-flags {
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.06) 0px,
-    rgba(255, 255, 255, 0.06) 2px,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 2px,
     transparent 2px,
     transparent 40px
   );
+  position: relative;
+  z-index: 1;
+}
+
+.bg-photo-collage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.bg-photo {
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-photo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(126, 200, 232, 0.22), transparent 45%),
+    radial-gradient(circle at 100% 20%, rgba(126, 200, 232, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(8, 23, 44, 0.92) 0%, rgba(11, 31, 58, 0.94) 55%, rgba(8, 23, 44, 0.96) 100%);
 }
