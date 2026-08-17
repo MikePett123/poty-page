@@ -34,6 +34,7 @@ export const FIRST_XI: Player[] = [
 
 export const SECOND_XI: Player[] = [
   { name: "Paul Ryder", team: "2nd", stats: fmt(265, 20.38, null, null, 4) },
+  { name: "Michael Pett", team: "2nd", stats: fmt(236, 26.22, 17, 19.18, 3) },
   { name: "Martin Pett", team: "2nd", stats: fmt(42, 6.00, null, null, 6) },
   { name: "David Carey", team: "2nd", stats: fmt(16, 8.00, 8, 21.75, null) },
   { name: "Duane Hall", team: "2nd", stats: fmt(78, 11.14, 5, 80.40, 4) },
