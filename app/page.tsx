@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Player, Team, TEAMS } from "@/lib/players";
 import StatsTable from "@/components/StatsTable";
+import Dropdown from "@/components/Dropdown";
 
 type PlayersResponse = {
   voters: Record<Team, Player[]>;
@@ -73,20 +74,13 @@ function VoteCard({
           <label className="block text-xs font-semibold uppercase tracking-wider text-sky-300/80 mb-1.5">
             Your name
           </label>
-          <select
-            required
+          <Dropdown
             value={voterName}
-            onChange={(e) => handleVoterChange(e.target.value)}
+            onChange={handleVoterChange}
             disabled={!canVote}
-            className="w-full rounded-lg bg-navy-900 border border-white/10 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-40"
-          >
-            <option value="">Select your name…</option>
-            {voters.map((p) => (
-              <option key={p.name} value={p.name}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            placeholder="Select your name…"
+            options={voters.map((p) => ({ value: p.name, label: p.name }))}
+          />
           {!canVote && (
             <p className="mt-1.5 text-xs text-white/50">Everyone eligible has already voted — thank you!</p>
           )}
@@ -96,20 +90,16 @@ function VoteCard({
           <label className="block text-xs font-semibold uppercase tracking-wider text-sky-300/80 mb-1.5">
             Vote for {meta.award}
           </label>
-          <select
-            required
+          <Dropdown
             value={nomineeName}
-            onChange={(e) => setNomineeName(e.target.value)}
+            onChange={setNomineeName}
             disabled={!canVote}
-            className="w-full rounded-lg bg-navy-900 border border-white/10 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-40"
-          >
-            <option value="">Select a nominee…</option>
-            {eligibleNominees.map((p) => (
-              <option key={p.name} value={p.name}>
-                {p.name} — {p.stats}
-              </option>
-            ))}
-          </select>
+            placeholder="Select a nominee…"
+            options={eligibleNominees.map((p) => ({
+              value: p.name,
+              label: `${p.name} — ${p.stats}`,
+            }))}
+          />
           {voterName && eligibleNominees.length < nominees.length && (
             <p className="mt-1.5 text-xs text-white/50">You can&apos;t vote for yourself.</p>
           )}
