@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { FIRST_XI, SECOND_XI, Team } from "@/lib/players";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
