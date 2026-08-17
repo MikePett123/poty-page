@@ -21,6 +21,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid voter or nominee for this team" }, { status: 400 });
     }
 
+    if (voterName === nomineeName) {
+      return NextResponse.json({ error: "You can't vote for yourself" }, { status: 400 });
+    }
+
     const supabase = supabaseAdmin();
 
     const { data: existing, error: checkError } = await supabase

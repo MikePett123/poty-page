@@ -27,6 +27,12 @@ function VoteCard({
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
 
   const canVote = voters.length > 0;
+  const eligibleNominees = nominees.filter((p) => p.name !== voterName);
+
+  function handleVoterChange(name: string) {
+    setVoterName(name);
+    if (nomineeName === name) setNomineeName("");
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -70,7 +76,7 @@ function VoteCard({
           <select
             required
             value={voterName}
-            onChange={(e) => setVoterName(e.target.value)}
+            onChange={(e) => handleVoterChange(e.target.value)}
             disabled={!canVote}
             className="w-full rounded-lg bg-navy-900 border border-white/10 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-40"
           >
@@ -98,12 +104,15 @@ function VoteCard({
             className="w-full rounded-lg bg-navy-900 border border-white/10 px-3 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-40"
           >
             <option value="">Select a nominee…</option>
-            {nominees.map((p) => (
+            {eligibleNominees.map((p) => (
               <option key={p.name} value={p.name}>
                 {p.name} — {p.stats}
               </option>
             ))}
           </select>
+          {voterName && eligibleNominees.length < nominees.length && (
+            <p className="mt-1.5 text-xs text-white/50">You can&apos;t vote for yourself.</p>
+          )}
         </div>
 
         <button
