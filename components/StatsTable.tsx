@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { BATTING, BOWLING, FIELDING } from "@/lib/stats";
-import { TEAMS, Team } from "@/lib/players";
 
 type Tab = "batting" | "bowling" | "fielding";
 
@@ -11,18 +10,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "bowling", label: "Bowling" },
   { key: "fielding", label: "Fielding" },
 ];
-
-function TeamBadge({ team }: { team: Team }) {
-  return (
-    <span
-      className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded ml-2 align-middle ${
-        team === "1st" ? "bg-sky-400/20 text-sky-300" : "bg-emerald-400/20 text-emerald-300"
-      }`}
-    >
-      {TEAMS[team].label}
-    </span>
-  );
-}
 
 function BattingTable() {
   const rows = [...BATTING].sort((a, b) => b.runs - a.runs);
@@ -43,10 +30,7 @@ function BattingTable() {
         <tbody>
           {rows.map((r) => (
             <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">
-                {r.name}
-                <TeamBadge team={r.team} />
-              </td>
+              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.inns}</td>
               <td className="py-2 px-3 text-right font-medium">{r.runs}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.hs}</td>
@@ -79,10 +63,7 @@ function BowlingTable() {
         <tbody>
           {rows.map((r) => (
             <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">
-                {r.name}
-                <TeamBadge team={r.team} />
-              </td>
+              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.overs.toFixed(1)}</td>
               <td className="py-2 px-3 text-right font-medium">{r.wkts}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.best}</td>
@@ -113,10 +94,7 @@ function FieldingTable() {
         <tbody>
           {rows.map((r) => (
             <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">
-                {r.name}
-                <TeamBadge team={r.team} />
-              </td>
+              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.catches}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.stumpings}</td>
               <td className="py-2 px-3 text-right text-white/70">{r.runOuts}</td>
