@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(126, 200, 232, 0.18), transparent 45%),
+    radial-gradient(circle at 100% 20%, rgba(126, 200, 232, 0.10), transparent 40%),
+    linear-gradient(180deg, #08172c 0%, #0b1f3a 55%, #08172c 100%);
+  min-height: 100vh;
+}
+
+.stripe-flags {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 0px,
+    rgba(255, 255, 255, 0.06) 2px,
+    transparent 2px,
+    transparent 40px
+  );
+}
