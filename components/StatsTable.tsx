@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { BATTING, BOWLING, FIELDING } from "@/lib/stats";
+import { useMemo, useState } from "react";
+import { BATTING, BOWLING, FIELDING, BattingRow, BowlingRow, FieldingRow } from "@/lib/stats";
 
 type Tab = "batting" | "bowling" | "fielding";
 
@@ -11,32 +11,93 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "fielding", label: "Fielding" },
 ];
 
-function BattingTable() {
-  const rows = [...BATTING].sort((a, b) => b.runs - a.runs);
+interface Column<T> {
+  key: string;
+  label: string;
+  align?: "left" | "right";
+  sortValue: (row: T) => number | string;
+  render: (row: T) => React.ReactNode;
+}
+
+function SortIcon({ direction }: { direction: "asc" | "desc" | null }) {
+  return (
+    <span className="inline-block ml-1 w-3 text-sky-300">
+      {direction === "asc" ? "▲" : direction === "desc" ? "▼" : ""}
+    </span>
+  );
+}
+
+function SortableTable<T>({
+  rows,
+  columns,
+  defaultSortKey,
+}: {
+  rows: T[];
+  columns: Column<T>[];
+  defaultSortKey: string;
+}) {
+  const [sortKey, setSortKey] = useState(defaultSortKey);
+  const [direction, setDirection] = useState<"asc" | "desc">("desc");
+
+  const sorted = useMemo(() => {
+    const col = columns.find((c) => c.key === sortKey);
+    if (!col) return rows;
+    const withValues = rows.map((r) => ({ row: r, value: col.sortValue(r) }));
+    withValues.sort((a, b) => {
+      const av = a.value;
+      const bv = b.value;
+      let cmp: number;
+      if (typeof av === "number" && typeof bv === "number") {
+        cmp = av - bv;
+      } else {
+        cmp = String(av).localeCompare(String(bv));
+      }
+      return direction === "asc" ? cmp : -cmp;
+    });
+    return withValues.map((w) => w.row);
+  }, [rows, columns, sortKey, direction]);
+
+  function handleSort(key: string) {
+    if (key === sortKey) {
+      setDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setDirection("desc");
+    }
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left border-collapse">
         <thead>
           <tr className="text-sky-300/80 uppercase text-xs tracking-wider border-b border-white/10">
-            <th className="py-2 pr-3 font-semibold">Player</th>
-            <th className="py-2 px-3 font-semibold text-right">Inns</th>
-            <th className="py-2 px-3 font-semibold text-right">Runs</th>
-            <th className="py-2 px-3 font-semibold text-right">HS</th>
-            <th className="py-2 px-3 font-semibold text-right">Avg</th>
-            <th className="py-2 px-3 font-semibold text-right">50s</th>
-            <th className="py-2 pl-3 font-semibold text-right">SR</th>
+            {columns.map((col, i) => (
+              <th
+                key={col.key}
+                onClick={() => handleSort(col.key)}
+                className={`py-2 font-semibold cursor-pointer select-none hover:text-sky-200 ${
+                  col.align === "right" ? "text-right" : "text-left"
+                } ${i === 0 ? "pr-3" : i === columns.length - 1 ? "pl-3" : "px-3"}`}
+              >
+                {col.label}
+                <SortIcon direction={sortKey === col.key ? direction : null} />
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.inns}</td>
-              <td className="py-2 px-3 text-right font-medium">{r.runs}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.hs}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.avg !== null ? r.avg.toFixed(2) : "-"}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.fifties}</td>
-              <td className="py-2 pl-3 text-right text-white/70">{r.sr}</td>
+          {sorted.map((row, idx) => (
+            <tr key={idx} className="border-b border-white/5 hover:bg-white/5">
+              {columns.map((col, i) => (
+                <td
+                  key={col.key}
+                  className={`py-2 ${col.align === "right" ? "text-right" : "text-left"} ${
+                    i === 0 ? "pr-3 whitespace-nowrap" : i === columns.length - 1 ? "pl-3" : "px-3"
+                  } ${col.key === sortKey ? "text-white" : "text-white/70"}`}
+                >
+                  {col.render(row)}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -45,67 +106,32 @@ function BattingTable() {
   );
 }
 
-function BowlingTable() {
-  const rows = [...BOWLING].sort((a, b) => b.wkts - a.wkts);
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left border-collapse">
-        <thead>
-          <tr className="text-sky-300/80 uppercase text-xs tracking-wider border-b border-white/10">
-            <th className="py-2 pr-3 font-semibold">Player</th>
-            <th className="py-2 px-3 font-semibold text-right">Overs</th>
-            <th className="py-2 px-3 font-semibold text-right">Wkts</th>
-            <th className="py-2 px-3 font-semibold text-right">Best</th>
-            <th className="py-2 px-3 font-semibold text-right">Econ</th>
-            <th className="py-2 pl-3 font-semibold text-right">Avg</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.overs.toFixed(1)}</td>
-              <td className="py-2 px-3 text-right font-medium">{r.wkts}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.best}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.econ.toFixed(2)}</td>
-              <td className="py-2 pl-3 text-right text-white/70">{r.avg.toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const battingColumns: Column<BattingRow>[] = [
+  { key: "name", label: "Player", sortValue: (r) => r.name, render: (r) => r.name },
+  { key: "inns", label: "Inns", align: "right", sortValue: (r) => r.inns, render: (r) => r.inns },
+  { key: "runs", label: "Runs", align: "right", sortValue: (r) => r.runs, render: (r) => <span className="font-medium text-white">{r.runs}</span> },
+  { key: "hs", label: "HS", align: "right", sortValue: (r) => parseInt(r.hs, 10) || 0, render: (r) => r.hs },
+  { key: "avg", label: "Avg", align: "right", sortValue: (r) => r.avg ?? -1, render: (r) => (r.avg !== null ? r.avg.toFixed(2) : "-") },
+  { key: "fifties", label: "50s", align: "right", sortValue: (r) => r.fifties, render: (r) => r.fifties },
+  { key: "sr", label: "SR", align: "right", sortValue: (r) => parseFloat(r.sr) || -1, render: (r) => r.sr },
+];
 
-function FieldingTable() {
-  const rows = [...FIELDING].sort((a, b) => b.totalDismissals - a.totalDismissals);
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left border-collapse">
-        <thead>
-          <tr className="text-sky-300/80 uppercase text-xs tracking-wider border-b border-white/10">
-            <th className="py-2 pr-3 font-semibold">Player</th>
-            <th className="py-2 px-3 font-semibold text-right">Catches</th>
-            <th className="py-2 px-3 font-semibold text-right">Stumpings</th>
-            <th className="py-2 px-3 font-semibold text-right">Run Outs</th>
-            <th className="py-2 pl-3 font-semibold text-right">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={`${r.team}-${r.name}`} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-2 pr-3 whitespace-nowrap">{r.name}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.catches}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.stumpings}</td>
-              <td className="py-2 px-3 text-right text-white/70">{r.runOuts}</td>
-              <td className="py-2 pl-3 text-right font-medium">{r.totalDismissals}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const bowlingColumns: Column<BowlingRow>[] = [
+  { key: "name", label: "Player", sortValue: (r) => r.name, render: (r) => r.name },
+  { key: "overs", label: "Overs", align: "right", sortValue: (r) => r.overs, render: (r) => r.overs.toFixed(1) },
+  { key: "wkts", label: "Wkts", align: "right", sortValue: (r) => r.wkts, render: (r) => <span className="font-medium text-white">{r.wkts}</span> },
+  { key: "best", label: "Best", align: "right", sortValue: (r) => parseInt(r.best, 10) || 0, render: (r) => r.best },
+  { key: "econ", label: "Econ", align: "right", sortValue: (r) => r.econ, render: (r) => r.econ.toFixed(2) },
+  { key: "avg", label: "Avg", align: "right", sortValue: (r) => r.avg, render: (r) => r.avg.toFixed(2) },
+];
+
+const fieldingColumns: Column<FieldingRow>[] = [
+  { key: "name", label: "Player", sortValue: (r) => r.name, render: (r) => r.name },
+  { key: "catches", label: "Catches", align: "right", sortValue: (r) => r.catches, render: (r) => r.catches },
+  { key: "stumpings", label: "Stumpings", align: "right", sortValue: (r) => r.stumpings, render: (r) => r.stumpings },
+  { key: "runOuts", label: "Run Outs", align: "right", sortValue: (r) => r.runOuts, render: (r) => r.runOuts },
+  { key: "totalDismissals", label: "Total", align: "right", sortValue: (r) => r.totalDismissals, render: (r) => <span className="font-medium text-white">{r.totalDismissals}</span> },
+];
 
 export default function StatsTable() {
   const [tab, setTab] = useState<Tab>("batting");
@@ -129,9 +155,9 @@ export default function StatsTable() {
       </div>
 
       <div className="p-6">
-        {tab === "batting" && <BattingTable />}
-        {tab === "bowling" && <BowlingTable />}
-        {tab === "fielding" && <FieldingTable />}
+        {tab === "batting" && <SortableTable rows={BATTING} columns={battingColumns} defaultSortKey="runs" />}
+        {tab === "bowling" && <SortableTable rows={BOWLING} columns={bowlingColumns} defaultSortKey="wkts" />}
+        {tab === "fielding" && <SortableTable rows={FIELDING} columns={fieldingColumns} defaultSortKey="totalDismissals" />}
       </div>
     </div>
   );

@@ -167,6 +167,11 @@ export default function Home() {
     <main className="min-h-screen stripe-flags">
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
+          <img
+            src="/crest.png"
+            alt="Ex Blues Cricket Club crest"
+            className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-4 drop-shadow-lg"
+          />
           <p className="text-sky-300 tracking-[0.3em] text-xs font-semibold uppercase mb-2">Season Awards</p>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
             Player of the Year
