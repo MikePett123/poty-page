@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export interface DropdownOption {
   value: string;
@@ -21,33 +22,63 @@ export default function Dropdown({
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const [rect, setRect] = useState<{ top: number; left: number; width: number } | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setMounted(true), []);
+
+  function updateRect() {
+    const el = buttonRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setRect({ top: r.bottom + window.scrollY, left: r.left + window.scrollX, width: r.width });
+  }
+
+  useLayoutEffect(() => {
+    if (open) updateRect();
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
 
     function handlePointerDown(e: PointerEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(target) &&
+        panelRef.current &&
+        !panelRef.current.contains(target)
+      ) {
         setOpen(false);
       }
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
+    function handleReposition() {
+      updateRect();
+    }
 
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("scroll", handleReposition, true);
+    window.addEventListener("resize", handleReposition);
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("scroll", handleReposition, true);
+      window.removeEventListener("resize", handleReposition);
     };
   }, [open]);
 
   const selected = options.find((o) => o.value === value);
 
   return (
-    <div ref={rootRef} className="relative">
+    <div className="relative">
       <button
+        ref={buttonRef}
         type="button"
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
@@ -67,8 +98,15 @@ export default function Dropdown({
         </svg>
       </button>
 
-      {open && (
-        <div className="absolute z-50 mt-1.5 w-full max-h-64 overflow-y-auto rounded-lg border border-sky-400/20 bg-navy-900 shadow-xl shadow-black/50">
+      {open &&
+        mounted &&
+        rect &&
+        createPortal(
+          <div
+            ref={panelRef}
+            style={{ position: "absolute", top: rect.top + 6, left: rect.left, width: rect.width }}
+            className="z-50 max-h-64 overflow-y-auto rounded-lg border border-sky-400/20 bg-navy-900 shadow-xl shadow-black/50"
+          >
             {options.map((opt) => (
               <button
                 key={opt.value}
@@ -87,8 +125,9 @@ export default function Dropdown({
             {options.length === 0 && (
               <div className="px-3 py-2.5 text-sm text-white/40">No options available</div>
             )}
-          </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
