@@ -22,6 +22,7 @@ export const FIRST_XI: Player[] = [
   { name: "Lewes Barham", team: "1st", stats: fmt(117, 19.50, 23, 16.52, 4) },
   { name: "Nabil Butt", team: "1st", stats: fmt(160, 20.00, null, null, 4) },
   { name: "Ganesh Ghube", team: "1st", stats: fmt(187, 31.17, 23, 15.96, 3) },
+  { name: "Ilham Karim", team: "1st", stats: fmt(236, 29.50, 12, 13.92, 7) },
   { name: "Matt Lynch", team: "1st", stats: fmt(301, 27.36, null, null, 8) },
   { name: "Faizan Ahmad", team: "1st", stats: fmt(56, 9.33, 8, 36.88, null) },
   { name: "Irfan Mirza", team: "1st", stats: fmt(77, 8.56, null, null, 4) },

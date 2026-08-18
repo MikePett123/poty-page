@@ -36,6 +36,7 @@ export const BATTING: BattingRow[] = [
   { name: "Matt Lynch", team: "1st", inns: 13, no: 2, runs: 301, hs: "75", avg: 27.36, fifties: 2, hundreds: 0, sr: "58.38" },
   { name: "Jack Stone", team: "1st", inns: 14, no: 0, runs: 290, hs: "84", avg: 20.71, fifties: 3, hundreds: 0, sr: "80.00" },
   { name: "Kieran Gibbons", team: "1st", inns: 13, no: 1, runs: 279, hs: "62*", avg: 23.25, fifties: 1, hundreds: 0, sr: "86.99" },
+  { name: "Ilham Karim", team: "1st", inns: 11, no: 3, runs: 236, hs: "67*", avg: 29.50, fifties: 2, hundreds: 0, sr: "86.75" },
   { name: "Ganesh Ghube", team: "1st", inns: 8, no: 2, runs: 187, hs: "42", avg: 31.17, fifties: 0, hundreds: 0, sr: "160.00" },
   { name: "Nabil Butt", team: "1st", inns: 10, no: 2, runs: 160, hs: "61*", avg: 20.00, fifties: 1, hundreds: 0, sr: "83.33" },
   { name: "Lewes Barham", team: "1st", inns: 8, no: 2, runs: 117, hs: "30", avg: 19.50, fifties: 0, hundreds: 0, sr: "64.62" },
@@ -69,6 +70,7 @@ export const BOWLING: BowlingRow[] = [
   { name: "Mark Loughlin", team: "1st", overs: 101.0, wkts: 24, best: "4/35", econ: 3.94, avg: 16.58 },
   { name: "Lewes Barham", team: "1st", overs: 107.0, wkts: 23, best: "3/24", econ: 3.55, avg: 16.52 },
   { name: "Ganesh Ghube", team: "1st", overs: 101.4, wkts: 23, best: "4/28", econ: 3.61, avg: 15.96 },
+  { name: "Ilham Karim", team: "1st", overs: 34.3, wkts: 12, best: "4/34", econ: 4.84, avg: 13.92 },
   { name: "Faizan Ahmad", team: "1st", overs: 51.0, wkts: 8, best: "3/49", econ: 5.78, avg: 36.88 },
   { name: "Shahab Imitaz", team: "1st", overs: 15.0, wkts: 4, best: "2/37", econ: 5.93, avg: 22.25 },
 
@@ -91,6 +93,7 @@ export const FIELDING: FieldingRow[] = [
   { name: "Lewes Barham", team: "1st", catches: 2, stumpings: 0, runOuts: 2, totalDismissals: 4 },
   { name: "Nabil Butt", team: "1st", catches: 4, stumpings: 0, runOuts: 0, totalDismissals: 4 },
   { name: "Irfan Mirza", team: "1st", catches: 3, stumpings: 0, runOuts: 1, totalDismissals: 4 },
+  { name: "Ilham Karim", team: "1st", catches: 6, stumpings: 0, runOuts: 1, totalDismissals: 7 },
   { name: "Ganesh Ghube", team: "1st", catches: 2, stumpings: 0, runOuts: 1, totalDismissals: 3 },
   { name: "Jack Stone", team: "1st", catches: 2, stumpings: 0, runOuts: 1, totalDismissals: 3 },
 
